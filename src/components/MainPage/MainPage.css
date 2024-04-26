@@ -1,0 +1,21 @@
+.main-page {
+  padding: 10px;
+}
+
+.add-skill-button {
+  padding: 10px;
+}
+
+.skill-grid {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0 20px 0;
+}
+
+/* =================== */
+
+.skill-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

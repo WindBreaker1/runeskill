@@ -1,0 +1,9 @@
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+.under-header {
+  display: flex;
+  flex-direction: row;
+}
