@@ -1,68 +1,94 @@
 // importing css
 import "./MainPage.css"
-// importing cards
-import { Card } from "../Card/Card"
 // impoting useState
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 // add this: https://www.npmjs.com/package/emoji-picker-element?activeTab=readme
 
 export const MainPage = () => {
-  const icon1 = "🌿";
-  const title1 = 'Meditation';
-  let level1 = 0;
-  let maxLevel1 = 99;
-  let exp1 = 0;
-
-  const [cardItems, setCardItems] = useState(["Workout", "Journal", "Read"]);
+  const [card, setCard] = useState(["Workout", "Journal", "Read"]);
   const [newCard, setNewCard] = useState('');
 
-  const [cardIcon, setCardIcon] = useState(["💪", "📝", "📚"]);
-  const [newCardIcon, setNewCardIcon] = useState('');
-  
-  const [cardLevel, setCardLevel] = useState([0, 3, 11]);
-  const [newCardLevel, setNewCardLevel] = useState(0);
+  const [icon, setIcon] = useState(["💪", "📝", "📚"]);
+  const [newIcon, setNewIcon] = useState('');
 
-  const [cardExp, setCardExp] = useState([0, 10, 100]);
-  const [newCardExp, setNewCardExp] = useState(0);
+  const [desc, setDesc] = useState(["a", "b", "c"]);
+  const [newDesc, setNewDesc] = useState(''); 
+
+  const [timer, setTimer] = useState(15);
+
+  // timer code
+  const timerId = useRef();
+
+  useEffect(() => {
+    timerId.current = setInterval(() => {
+      setTimer(prev => prev - 1)
+    }, 1000)
+    return () => {clearInterval(timerId.current)}
+  }, []);
+
+  useEffect(() => {
+    if (timer <= 0) {
+      clearInterval(timerId.current);
+    }
+  }, [timer])
   
   function addCard() {
-    setCardItems(c => [...c, newCard]);
+    setIcon(i => [...i, newIcon]);
+    setNewIcon('');
+
+    setCard(c => [...c, newCard]);
     setNewCard('');
 
-    setCardIcon(i => [...i, newCardIcon]);
-    setNewCardIcon('');
-
-    setCardLevel(l => [...l, newCardLevel]);
-    setNewCardLevel(0);
-
-    setCardExp(e => [...e, newCardExp]);
-    setNewCardExp(0);
+    setDesc(d => [...d, newDesc]);
+    setNewDesc('');
   }
 
+  // input functions
+  function handleIconChange(e) {
+    setNewIcon(e.target.value);
+  }
   function handleInputChange(e) {
     setNewCard(e.target.value);
   }
-
-  function handleIconChange(e) {
-    setNewCardIcon(e.target.value);
+  function handleDescChange(e) {
+    setNewDesc(e.target.value);
   }
+
+  function completeCard(index) {
+    
+  }
+
+  function deleteCard(index) {
+    const updatedCards = card.filter((_, i) => i !== index);
+    setCard(updatedCards);
+    const updatedIcons = icon.filter((_, i) => i !== index);
+    setIcon(updatedIcons);
+    const updatedDesc = desc.filter((_, i) => i !== index);
+    setDesc(updatedDesc);
+  }
+
   
   return (
     <div className="main-page">
       <h2>Add a skill!</h2>
-      <input type="text" placeholder='Set Icon' value={newCardIcon} onChange={handleIconChange} />
+      <p>{timer}</p>
+      <input type="text" placeholder='Set Icon' value={newIcon} onChange={handleIconChange} />
       <input type="text" placeholder='Set Skill' value={newCard} onChange={handleInputChange} />
+      <input type="text" placeholder='Set Description' value={newDesc} onChange={handleDescChange} />
+      <input type="number" placeholder='Set Timer (in minutes)' />
       <button className="add-skill-button" onClick={addCard}>Add New Skill</button>
-      <div className="skill-grid">
-        <Card icon={icon1} title={title1} level={level1} maxLevel={maxLevel1} exp={exp1}/>   
-
-        <div className="skill-items">
-          {cardItems.map((card, index) => (
-            <Card key={index} icon={cardIcon[index]} title={card} level={cardLevel[index]} maxLevel={maxLevel1} exp={cardExp[index]}/>
-          ))}
-        </div>
-
+      <div className="skill-grid">  
+        {card.map((card, index) => (
+          <div className="card" key={index}>
+            <div className="card-icon">{icon[index]}</div>
+            <p className="card-title">{card}</p>
+            <p className="card-description">{desc[index]}</p>
+            <p className="card-timer">{timer[index]}</p>
+            <button className="add-exp-button" onClick={() => {completeCard(index)}}>Complete</button>
+            <button className="delete-button" onClick={() => {deleteCard(index)}}>Delete</button>
+          </div>
+        ))}
       </div>
     </div>
   )
