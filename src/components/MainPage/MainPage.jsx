@@ -15,14 +15,15 @@ export const MainPage = () => {
   const [desc, setDesc] = useState(["a", "b", "c"]);
   const [newDesc, setNewDesc] = useState(''); 
 
-  const [timer, setTimer] = useState(15);
+  const [newTimer, setNewTimer] = useState(0);
+  const [timer, setTimer] = useState([newTimer, newTimer, newTimer]);
 
   // timer code
   const timerId = useRef();
 
   useEffect(() => {
     timerId.current = setInterval(() => {
-      setTimer(prev => prev - 1)
+      setNewTimer(prev => prev - 1)
     }, 1000)
     return () => {clearInterval(timerId.current)}
   }, []);
@@ -42,6 +43,9 @@ export const MainPage = () => {
 
     setDesc(d => [...d, newDesc]);
     setNewDesc('');
+
+    setTimer(t => [...t, newTimer]);
+    setNewTimer(0);
   }
 
   // input functions
@@ -53,6 +57,9 @@ export const MainPage = () => {
   }
   function handleDescChange(e) {
     setNewDesc(e.target.value);
+  }
+  function handleTimeChange(e) {
+    setNewTimer(e.target.value);
   }
 
   function completeCard(index) {
@@ -73,10 +80,11 @@ export const MainPage = () => {
     <div className="main-page">
       <h2>Add a skill!</h2>
       <p>{timer}</p>
+      <p>{newTimer}</p>
       <input type="text" placeholder='Set Icon' value={newIcon} onChange={handleIconChange} />
       <input type="text" placeholder='Set Skill' value={newCard} onChange={handleInputChange} />
       <input type="text" placeholder='Set Description' value={newDesc} onChange={handleDescChange} />
-      <input type="number" placeholder='Set Timer (in minutes)' />
+      <input type="number" placeholder='Set Timer (in minutes)' value={newTimer} onChange={handleTimeChange} />
       <button className="add-skill-button" onClick={addCard}>Add New Skill</button>
       <div className="skill-grid">  
         {card.map((card, index) => (
